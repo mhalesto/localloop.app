@@ -821,6 +821,15 @@
             <div id="posts-page" class="page-content" style="display: none;">
                 <h2>📝 Post Management</h2>
 
+                <!-- Info Banner -->
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+                    <div style="font-size: 24px;">ℹ️</div>
+                    <div style="flex: 1;">
+                        <strong style="display: block; margin-bottom: 4px;">Post Collections</strong>
+                        <span style="opacity: 0.9; font-size: 14px;">This page fetches from both 'posts' (private/city-restricted) and 'publicPosts' (globally visible) Firestore collections.</span>
+                    </div>
+                </div>
+
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-card-header">
@@ -1789,8 +1798,24 @@
                 }
             } catch (error) {
                 console.error('Error loading posts page:', error);
+
+                let errorMessage = 'Error loading posts.';
+                if (error.code === 'permission-denied') {
+                    errorMessage = '🔒 Permission denied. Please ensure you are signed in with an admin account.';
+                } else if (error.message && error.message.includes('ERR_BLOCKED_BY_CLIENT')) {
+                    errorMessage = '🚫 Request blocked by browser. Please disable ad blockers and try again.';
+                } else {
+                    errorMessage = `Error: ${error.message || 'Unknown error'}. Please refresh or check console.`;
+                }
+
                 document.getElementById('allPostsTable').innerHTML =
-                    '<tr><td colspan="7" style="text-align: center; padding: 2rem; color: #ef4444;">Error loading posts. Please refresh.</td></tr>';
+                    `<tr><td colspan="7" style="text-align: center; padding: 2rem; color: #ef4444;">${errorMessage}</td></tr>`;
+
+                // Reset stats to show error state
+                document.getElementById('postsTotal').textContent = '—';
+                document.getElementById('postsPublic').textContent = '—';
+                document.getElementById('postsPrivate').textContent = '—';
+                document.getElementById('postsWeek').textContent = '—';
             }
         }
 
