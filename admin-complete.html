@@ -1734,6 +1734,8 @@
 
         async function loadPostsPage() {
             try {
+                console.log('[DEBUG] Loading posts page...');
+
                 // Fetch private posts (from 'posts' collection)
                 const privatePostsQuery = query(collection(db, 'posts'), orderBy('timestamp', 'desc'), limit(100));
                 const privateSnapshot = await getDocs(privatePostsQuery);
@@ -1742,6 +1744,7 @@
                 privateSnapshot.forEach(doc => {
                     allPostsData.private.push({ id: doc.id, type: 'private', ...doc.data() });
                 });
+                console.log('[DEBUG] Private posts loaded:', allPostsData.private.length);
 
                 // Fetch public posts (from 'publicPosts' collection)
                 const publicPostsQuery = query(collection(db, 'publicPosts'), orderBy('timestamp', 'desc'), limit(100));
@@ -1751,6 +1754,7 @@
                 publicSnapshot.forEach(doc => {
                     allPostsData.public.push({ id: doc.id, type: 'public', ...doc.data() });
                 });
+                console.log('[DEBUG] Public posts loaded:', allPostsData.public.length);
 
                 // Combine all posts
                 const allPosts = [...allPostsData.public, ...allPostsData.private];
@@ -2085,6 +2089,10 @@
                 const analyticsResult = await getAdminAnalytics();
                 const analytics = analyticsResult.data;
                 latestAnalytics = analytics;
+
+                // Debug: Log analytics data
+                console.log('[DEBUG] Analytics data received:', analytics);
+                console.log('[DEBUG] Total Posts:', analytics.totalPosts);
 
                 // Get geographic stats
                 const geoResult = await getGeographicStats({
