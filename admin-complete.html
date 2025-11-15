@@ -828,35 +828,45 @@
                             <div class="stat-icon orange">📝</div>
                         </div>
                         <div class="stat-value" id="postsTotal">0</div>
-                        <div class="stat-change">All time</div>
+                        <div class="stat-change">All posts (public + private)</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <span class="stat-label">Public Posts</span>
+                            <div class="stat-icon green">🌍</div>
+                        </div>
+                        <div class="stat-value" id="postsPublic">0</div>
+                        <div class="stat-change">Visible to everyone</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <span class="stat-label">Private Posts</span>
+                            <div class="stat-icon purple">🔒</div>
+                        </div>
+                        <div class="stat-value" id="postsPrivate">0</div>
+                        <div class="stat-change">City-restricted</div>
                     </div>
 
                     <div class="stat-card">
                         <div class="stat-card-header">
                             <span class="stat-label">This Week</span>
-                            <div class="stat-icon green">📅</div>
+                            <div class="stat-icon blue">📅</div>
                         </div>
                         <div class="stat-value" id="postsWeek">0</div>
                         <div class="stat-change">Last 7 days</div>
                     </div>
+                </div>
 
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <span class="stat-label">This Month</span>
-                            <div class="stat-icon purple">📆</div>
-                        </div>
-                        <div class="stat-value" id="postsMonth">0</div>
-                        <div class="stat-change">Last 30 days</div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <span class="stat-label">Avg. Per User</span>
-                            <div class="stat-icon green">📊</div>
-                        </div>
-                        <div class="stat-value" id="postsAvg">0</div>
-                        <div class="stat-change">Engagement rate</div>
-                    </div>
+                <!-- Post Type Filter -->
+                <div style="margin: 1.5rem 0; display: flex; gap: 1rem; align-items: center;">
+                    <label style="font-weight: 600;">Filter by type:</label>
+                    <select id="postTypeFilter" style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid #cbd5e1; background: white; cursor: pointer;">
+                        <option value="all">All Posts</option>
+                        <option value="public">Public Posts Only</option>
+                        <option value="private">Private Posts Only</option>
+                    </select>
                 </div>
 
                 <div class="table-card">
@@ -864,6 +874,7 @@
                     <table>
                         <thead>
                             <tr>
+                                <th>Type</th>
                                 <th>Author</th>
                                 <th>Content</th>
                                 <th>Comments</th>
@@ -874,7 +885,7 @@
                         </thead>
                         <tbody id="allPostsTable">
                             <tr>
-                                <td colspan="6" style="text-align: center; padding: 2rem;">Loading posts...</td>
+                                <td colspan="7" style="text-align: center; padding: 2rem;">Loading posts...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -1706,62 +1717,116 @@
             }
         }
 
+        // Global posts data storage
+        let allPostsData = {
+            public: [],
+            private: []
+        };
+
         async function loadPostsPage() {
             try {
-                const postsQuery = query(collection(db, 'posts'), orderBy('timestamp', 'desc'), limit(50));
-                const snapshot = await getDocs(postsQuery);
+                // Fetch private posts (from 'posts' collection)
+                const privatePostsQuery = query(collection(db, 'posts'), orderBy('timestamp', 'desc'), limit(100));
+                const privateSnapshot = await getDocs(privatePostsQuery);
 
-                const posts = [];
-                snapshot.forEach(doc => {
-                    posts.push({ id: doc.id, ...doc.data() });
+                allPostsData.private = [];
+                privateSnapshot.forEach(doc => {
+                    allPostsData.private.push({ id: doc.id, type: 'private', ...doc.data() });
+                });
+
+                // Fetch public posts (from 'publicPosts' collection)
+                const publicPostsQuery = query(collection(db, 'publicPosts'), orderBy('timestamp', 'desc'), limit(100));
+                const publicSnapshot = await getDocs(publicPostsQuery);
+
+                allPostsData.public = [];
+                publicSnapshot.forEach(doc => {
+                    allPostsData.public.push({ id: doc.id, type: 'public', ...doc.data() });
+                });
+
+                // Combine all posts
+                const allPosts = [...allPostsData.public, ...allPostsData.private];
+
+                // Sort by timestamp (newest first)
+                allPosts.sort((a, b) => {
+                    const timeA = a.timestamp ? a.timestamp.toMillis() : 0;
+                    const timeB = b.timestamp ? b.timestamp.toMillis() : 0;
+                    return timeB - timeA;
                 });
 
                 // Calculate stats
                 const now = new Date();
                 const weekAgo = new Date(now.getTime() - 7*24*60*60*1000);
-                const monthAgo = new Date(now.getTime() - 30*24*60*60*1000);
 
-                const postsWeek = posts.filter(p => p.timestamp && p.timestamp.toDate() > weekAgo).length;
-                const postsMonth = posts.filter(p => p.timestamp && p.timestamp.toDate() > monthAgo).length;
+                const postsWeek = allPosts.filter(p => {
+                    if (!p.timestamp) return false;
+                    return p.timestamp.toDate() > weekAgo;
+                }).length;
 
-                const usersSnapshot = await getDocs(collection(db, 'users'));
-                const usersCount = usersSnapshot.size;
-                const avgPosts = usersCount > 0 ? (posts.length / usersCount).toFixed(1) : 0;
-
-                document.getElementById('postsTotal').textContent = posts.length;
+                // Update stats
+                document.getElementById('postsTotal').textContent = allPosts.length;
+                document.getElementById('postsPublic').textContent = allPostsData.public.length;
+                document.getElementById('postsPrivate').textContent = allPostsData.private.length;
                 document.getElementById('postsWeek').textContent = postsWeek;
-                document.getElementById('postsMonth').textContent = postsMonth;
-                document.getElementById('postsAvg').textContent = avgPosts;
 
-                // Update table
-                const tbody = document.getElementById('allPostsTable');
-                if (posts.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem;">No posts found</td></tr>';
-                    return;
+                // Render table with all posts initially
+                renderPostsTable(allPosts);
+
+                // Add filter listener
+                const filterSelect = document.getElementById('postTypeFilter');
+                if (filterSelect) {
+                    filterSelect.onchange = () => {
+                        const filterValue = filterSelect.value;
+                        let filteredPosts = allPosts;
+
+                        if (filterValue === 'public') {
+                            filteredPosts = allPostsData.public;
+                        } else if (filterValue === 'private') {
+                            filteredPosts = allPostsData.private;
+                        }
+
+                        renderPostsTable(filteredPosts);
+                    };
                 }
-
-                tbody.innerHTML = posts.slice(0, 20).map(post => {
-                    const author = post.author?.displayName || post.author?.nickname || 'Anonymous';
-                    const content = post.content ? (post.content.substring(0, 100) + (post.content.length > 100 ? '...' : '')) : '';
-                    const comments = post.commentCount || 0;
-                    const likes = post.likeCount || 0;
-                    const location = post.location || 'Unknown';
-                    const posted = post.timestamp ? new Date(post.timestamp.toDate()).toLocaleDateString() : 'Unknown';
-
-                    return `
-                        <tr>
-                            <td><strong>${author}</strong></td>
-                            <td>${content}</td>
-                            <td>${comments}</td>
-                            <td>${likes}</td>
-                            <td>${location}</td>
-                            <td>${posted}</td>
-                        </tr>
-                    `;
-                }).join('');
             } catch (error) {
                 console.error('Error loading posts page:', error);
+                document.getElementById('allPostsTable').innerHTML =
+                    '<tr><td colspan="7" style="text-align: center; padding: 2rem; color: #ef4444;">Error loading posts. Please refresh.</td></tr>';
             }
+        }
+
+        function renderPostsTable(posts) {
+            const tbody = document.getElementById('allPostsTable');
+
+            if (posts.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">No posts found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = posts.slice(0, 50).map(post => {
+                const author = post.author?.displayName || post.author?.nickname || post.userName || 'Anonymous';
+                const content = post.content ? (post.content.substring(0, 100) + (post.content.length > 100 ? '...' : '')) : '';
+                const comments = post.commentCount || 0;
+                const likes = post.likeCount || post.upvotes || 0;
+                const location = post.city || post.location || 'Unknown';
+                const posted = post.timestamp ? new Date(post.timestamp.toDate()).toLocaleDateString() : 'Unknown';
+
+                // Post type badge
+                const typeBadge = post.type === 'public'
+                    ? '<span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">🌍 PUBLIC</span>'
+                    : '<span style="background: #8b5cf6; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">🔒 PRIVATE</span>';
+
+                return `
+                    <tr>
+                        <td>${typeBadge}</td>
+                        <td><strong>${author}</strong></td>
+                        <td style="max-width: 300px;">${content}</td>
+                        <td>${comments}</td>
+                        <td>${likes}</td>
+                        <td>${location}</td>
+                        <td>${posted}</td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         async function loadGeographyPage() {
