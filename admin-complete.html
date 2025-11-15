@@ -1737,7 +1737,8 @@
                 console.log('[DEBUG] Loading posts page...');
 
                 // Fetch private posts (from 'posts' collection)
-                const privatePostsQuery = query(collection(db, 'posts'), orderBy('timestamp', 'desc'), limit(100));
+                // Note: Posts use 'createdAt' field, not 'timestamp'
+                const privatePostsQuery = query(collection(db, 'posts'), orderBy('createdAt', 'desc'), limit(100));
                 const privateSnapshot = await getDocs(privatePostsQuery);
 
                 allPostsData.private = [];
@@ -1747,7 +1748,8 @@
                 console.log('[DEBUG] Private posts loaded:', allPostsData.private.length);
 
                 // Fetch public posts (from 'publicPosts' collection)
-                const publicPostsQuery = query(collection(db, 'publicPosts'), orderBy('timestamp', 'desc'), limit(100));
+                // Note: Public posts use 'createdAt' field, not 'timestamp'
+                const publicPostsQuery = query(collection(db, 'publicPosts'), orderBy('createdAt', 'desc'), limit(100));
                 const publicSnapshot = await getDocs(publicPostsQuery);
 
                 allPostsData.public = [];
@@ -1759,10 +1761,10 @@
                 // Combine all posts
                 const allPosts = [...allPostsData.public, ...allPostsData.private];
 
-                // Sort by timestamp (newest first)
+                // Sort by createdAt (newest first)
                 allPosts.sort((a, b) => {
-                    const timeA = a.timestamp ? a.timestamp.toMillis() : 0;
-                    const timeB = b.timestamp ? b.timestamp.toMillis() : 0;
+                    const timeA = a.createdAt ? a.createdAt.toMillis() : 0;
+                    const timeB = b.createdAt ? b.createdAt.toMillis() : 0;
                     return timeB - timeA;
                 });
 
@@ -1771,8 +1773,8 @@
                 const weekAgo = new Date(now.getTime() - 7*24*60*60*1000);
 
                 const postsWeek = allPosts.filter(p => {
-                    if (!p.timestamp) return false;
-                    return p.timestamp.toDate() > weekAgo;
+                    if (!p.createdAt) return false;
+                    return p.createdAt.toDate() > weekAgo;
                 }).length;
 
                 // Update stats
@@ -1832,12 +1834,13 @@
             }
 
             tbody.innerHTML = posts.slice(0, 50).map(post => {
-                const author = post.author?.displayName || post.author?.nickname || post.userName || 'Anonymous';
-                const content = post.content ? (post.content.substring(0, 100) + (post.content.length > 100 ? '...' : '')) : '';
-                const comments = post.commentCount || 0;
-                const likes = post.likeCount || post.upvotes || 0;
+                const author = post.author?.displayName || post.author?.nickname || post.userName || post.authorDisplayName || 'Anonymous';
+                const content = post.content || post.message || post.title || '';
+                const contentPreview = content.substring(0, 100) + (content.length > 100 ? '...' : '');
+                const comments = post.commentCount || post.commentsCount || 0;
+                const likes = post.likeCount || post.likesCount || post.upvotes || 0;
                 const location = post.city || post.location || 'Unknown';
-                const posted = post.timestamp ? new Date(post.timestamp.toDate()).toLocaleDateString() : 'Unknown';
+                const posted = post.createdAt ? new Date(post.createdAt.toDate()).toLocaleDateString() : 'Unknown';
 
                 // Post type badge
                 const typeBadge = post.type === 'public'
@@ -1848,7 +1851,7 @@
                     <tr>
                         <td>${typeBadge}</td>
                         <td><strong>${author}</strong></td>
-                        <td style="max-width: 300px;">${content}</td>
+                        <td style="max-width: 300px;">${contentPreview}</td>
                         <td>${comments}</td>
                         <td>${likes}</td>
                         <td>${location}</td>
