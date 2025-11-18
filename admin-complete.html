@@ -461,9 +461,10 @@
             font-weight: 600;
         }
 
-        .badge.gold { background: #fef3c7; color: #92400e; }
-        .badge.premium { background: #ddd6fe; color: #5b21b6; }
         .badge.basic { background: #e5e7eb; color: #374151; }
+        .badge.premium { background: #d1fae5; color: #065f46; }
+        .badge.gold { background: #ede9fe; color: #5b21b6; }
+        .badge.ultimate { background: #fef3c7; color: #92400e; }
 
         /* Page Content */
         .page-content {
@@ -634,20 +635,29 @@
 
                 <div class="stat-card">
                     <div class="stat-card-header">
+                        <span class="stat-label">Go Users</span>
+                        <div class="stat-icon green">🚀</div>
+                    </div>
+                    <div class="stat-value" id="goUsers">0</div>
+                    <div class="stat-change" id="goChange">R79.99 plan</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
                         <span class="stat-label">Premium Users</span>
-                        <div class="stat-icon purple">⭐</div>
+                        <div class="stat-icon purple">👑</div>
                     </div>
                     <div class="stat-value" id="premiumUsers">0</div>
-                    <div class="stat-change positive" id="premiumChange">+0% conversion</div>
+                    <div class="stat-change positive" id="premiumChange">R149.99 plan</div>
                 </div>
 
                 <div class="stat-card">
                     <div class="stat-card-header">
                         <span class="stat-label">Gold Users</span>
-                        <div class="stat-icon orange">👑</div>
+                        <div class="stat-icon orange">💎</div>
                     </div>
                     <div class="stat-value" id="goldUsers">0</div>
-                    <div class="stat-change positive" id="goldChange">+0% conversion</div>
+                    <div class="stat-change positive" id="goldChange">R249.99 plan</div>
                 </div>
 
                 <div class="stat-card">
@@ -771,7 +781,16 @@
                             <div class="stat-icon green">📱</div>
                         </div>
                         <div class="stat-value" id="usersBasic">0</div>
-                        <div class="stat-change">Free tier users</div>
+                        <div class="stat-change">Forever free</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <span class="stat-label">Go Plan</span>
+                            <div class="stat-icon green">🚀</div>
+                        </div>
+                        <div class="stat-value" id="usersGo">0</div>
+                        <div class="stat-change">R79.99/month</div>
                     </div>
 
                     <div class="stat-card">
@@ -780,7 +799,7 @@
                             <div class="stat-icon purple">⭐</div>
                         </div>
                         <div class="stat-value" id="usersPremium">0</div>
-                        <div class="stat-change">R49.99/month</div>
+                        <div class="stat-change">R149.99/month</div>
                     </div>
 
                     <div class="stat-card">
@@ -789,7 +808,7 @@
                             <div class="stat-icon orange">🏆</div>
                         </div>
                         <div class="stat-value" id="usersGold">0</div>
-                        <div class="stat-change">R149.99/month</div>
+                        <div class="stat-change">R249.99/month</div>
                     </div>
                 </div>
 
@@ -821,15 +840,6 @@
             <div id="posts-page" class="page-content" style="display: none;">
                 <h2>📝 Post Management</h2>
 
-                <!-- Info Banner -->
-                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem;">
-                    <div style="font-size: 24px;">ℹ️</div>
-                    <div style="flex: 1;">
-                        <strong style="display: block; margin-bottom: 4px;">Post Collections</strong>
-                        <span style="opacity: 0.9; font-size: 14px;">This page fetches from both 'posts' (private/city-restricted) and 'publicPosts' (globally visible) Firestore collections.</span>
-                    </div>
-                </div>
-
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-card-header">
@@ -837,45 +847,35 @@
                             <div class="stat-icon orange">📝</div>
                         </div>
                         <div class="stat-value" id="postsTotal">0</div>
-                        <div class="stat-change">All posts (public + private)</div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <span class="stat-label">Public Posts</span>
-                            <div class="stat-icon green">🌍</div>
-                        </div>
-                        <div class="stat-value" id="postsPublic">0</div>
-                        <div class="stat-change">Visible to everyone</div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <span class="stat-label">Private Posts</span>
-                            <div class="stat-icon purple">🔒</div>
-                        </div>
-                        <div class="stat-value" id="postsPrivate">0</div>
-                        <div class="stat-change">City-restricted</div>
+                        <div class="stat-change">All time</div>
                     </div>
 
                     <div class="stat-card">
                         <div class="stat-card-header">
                             <span class="stat-label">This Week</span>
-                            <div class="stat-icon blue">📅</div>
+                            <div class="stat-icon green">📅</div>
                         </div>
                         <div class="stat-value" id="postsWeek">0</div>
                         <div class="stat-change">Last 7 days</div>
                     </div>
-                </div>
 
-                <!-- Post Type Filter -->
-                <div style="margin: 1.5rem 0; display: flex; gap: 1rem; align-items: center;">
-                    <label style="font-weight: 600;">Filter by type:</label>
-                    <select id="postTypeFilter" style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid #cbd5e1; background: white; cursor: pointer;">
-                        <option value="all">All Posts</option>
-                        <option value="public">Public Posts Only</option>
-                        <option value="private">Private Posts Only</option>
-                    </select>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <span class="stat-label">This Month</span>
+                            <div class="stat-icon purple">📆</div>
+                        </div>
+                        <div class="stat-value" id="postsMonth">0</div>
+                        <div class="stat-change">Last 30 days</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <span class="stat-label">Avg. Per User</span>
+                            <div class="stat-icon green">📊</div>
+                        </div>
+                        <div class="stat-value" id="postsAvg">0</div>
+                        <div class="stat-change">Engagement rate</div>
+                    </div>
                 </div>
 
                 <div class="table-card">
@@ -883,7 +883,6 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Type</th>
                                 <th>Author</th>
                                 <th>Content</th>
                                 <th>Comments</th>
@@ -894,7 +893,7 @@
                         </thead>
                         <tbody id="allPostsTable">
                             <tr>
-                                <td colspan="7" style="text-align: center; padding: 2rem;">Loading posts...</td>
+                                <td colspan="6" style="text-align: center; padding: 2rem;">Loading posts...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -998,20 +997,29 @@
 
                     <div class="stat-card">
                         <div class="stat-card-header">
+                            <span class="stat-label">Go Revenue</span>
+                            <div class="stat-icon green">🚀</div>
+                        </div>
+                        <div class="stat-value" id="revenueGo">R0</div>
+                        <div class="stat-change">R79.99 × users</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-header">
                             <span class="stat-label">Premium Revenue</span>
                             <div class="stat-icon purple">⭐</div>
                         </div>
                         <div class="stat-value" id="revenuePremium">R0</div>
-                        <div class="stat-change">R49.99 × users</div>
+                        <div class="stat-change">R149.99 × users</div>
                     </div>
 
                     <div class="stat-card">
                         <div class="stat-card-header">
                             <span class="stat-label">Gold Revenue</span>
-                            <div class="stat-icon orange">🏆</div>
+                            <div class="stat-icon orange">💎</div>
                         </div>
                         <div class="stat-value" id="revenueGold">R0</div>
-                        <div class="stat-change">R149.99 × users</div>
+                        <div class="stat-change">R249.99 × users</div>
                     </div>
 
                     <div class="stat-card">
@@ -1478,6 +1486,33 @@
             }
         };
 
+        const PLAN_METADATA = {
+            basic: { label: 'Basic', priceLabel: 'Free forever', monthlyPrice: 0, badgeClass: 'basic' },
+            premium: { label: 'Go', priceLabel: 'R79.99/month', monthlyPrice: 79.99, badgeClass: 'premium' },
+            gold: { label: 'Premium', priceLabel: 'R149.99/month', monthlyPrice: 149.99, badgeClass: 'gold' },
+            ultimate: { label: 'Gold', priceLabel: 'R249.99/month', monthlyPrice: 249.99, badgeClass: 'ultimate' }
+        };
+
+        const PLAN_ORDER = ['basic', 'premium', 'gold', 'ultimate'];
+
+        const normalizePlan = (planId = 'basic') => PLAN_ORDER.includes(planId) ? planId : 'basic';
+        const getPlanMeta = (planId) => PLAN_METADATA[normalizePlan(planId)];
+        const formatCurrency = (value = 0) => 'R' + Math.round(Number(value) || 0).toLocaleString();
+
+        function getPlanCounts(analytics = {}) {
+            const hasGoField = typeof analytics.goUsers === 'number';
+
+            const goUsers = hasGoField ? (analytics.goUsers ?? 0) : (analytics.premiumUsers ?? 0);
+            const premiumUsers = hasGoField ? (analytics.premiumUsers ?? 0) : (analytics.goldUsers ?? 0);
+            const goldUsers = hasGoField ? (analytics.goldUsers ?? 0) : 0;
+            const basicUsers = Math.max(
+                (analytics.totalUsers ?? 0) - goUsers - premiumUsers - goldUsers,
+                0
+            );
+
+            return { basicUsers, goUsers, premiumUsers, goldUsers };
+        }
+
         // Page navigation system
         function switchPage(pageName) {
             // Hide all pages
@@ -1685,12 +1720,22 @@
                 });
 
                 // Update stats
-                const basicCount = users.filter(u => !u.subscriptionPlan || u.subscriptionPlan === 'basic').length;
-                const premiumCount = users.filter(u => u.subscriptionPlan === 'premium').length;
-                const goldCount = users.filter(u => u.subscriptionPlan === 'gold').length;
+                let basicCount = 0;
+                let goCount = 0;
+                let premiumCount = 0;
+                let goldCount = 0;
+
+                users.forEach(user => {
+                    const planId = normalizePlan(user.subscriptionPlan || 'basic');
+                    if (planId === 'basic') basicCount++;
+                    else if (planId === 'premium') goCount++;
+                    else if (planId === 'gold') premiumCount++;
+                    else if (planId === 'ultimate') goldCount++;
+                });
 
                 document.getElementById('usersTotal').textContent = users.length;
                 document.getElementById('usersBasic').textContent = basicCount;
+                document.getElementById('usersGo').textContent = goCount;
                 document.getElementById('usersPremium').textContent = premiumCount;
                 document.getElementById('usersGold').textContent = goldCount;
 
@@ -1702,8 +1747,8 @@
                 }
 
                 tbody.innerHTML = users.map(user => {
-                    const plan = user.subscriptionPlan || 'basic';
-                    const badgeClass = plan === 'gold' ? 'gold' : plan === 'premium' ? 'premium' : 'basic';
+                    const planId = normalizePlan(user.subscriptionPlan || 'basic');
+                    const planInfo = getPlanMeta(planId);
                     const location = user.city ? `${user.city}, ${user.province || user.country}` : (user.province || user.country || 'Not set');
                     const lastActive = user.lastActive ? new Date(user.lastActive.toDate()).toLocaleDateString() : 'Never';
                     const joined = user.createdAt ? new Date(user.createdAt.toDate()).toLocaleDateString() : 'Unknown';
@@ -1714,7 +1759,7 @@
                             <td><strong>${user.displayName || 'Anonymous'}</strong></td>
                             <td>${user.email || 'N/A'}</td>
                             <td>${location}</td>
-                            <td><span class="badge ${badgeClass}">${plan.toUpperCase()}</span></td>
+                            <td><span class="badge ${planInfo.badgeClass}">${planInfo.label}</span></td>
                             <td>${joined}</td>
                             <td>${lastActive}</td>
                             <td>${status}</td>
@@ -1726,139 +1771,62 @@
             }
         }
 
-        // Global posts data storage
-        let allPostsData = {
-            public: [],
-            private: []
-        };
-
         async function loadPostsPage() {
             try {
-                console.log('[DEBUG] Loading posts page...');
+                const postsQuery = query(collection(db, 'posts'), orderBy('timestamp', 'desc'), limit(50));
+                const snapshot = await getDocs(postsQuery);
 
-                // Fetch private posts (from 'posts' collection)
-                // Note: Posts use 'createdAt' field, not 'timestamp'
-                const privatePostsQuery = query(collection(db, 'posts'), orderBy('createdAt', 'desc'), limit(100));
-                const privateSnapshot = await getDocs(privatePostsQuery);
-
-                allPostsData.private = [];
-                privateSnapshot.forEach(doc => {
-                    allPostsData.private.push({ id: doc.id, type: 'private', ...doc.data() });
-                });
-                console.log('[DEBUG] Private posts loaded:', allPostsData.private.length);
-
-                // Fetch public posts (from 'publicPosts' collection)
-                // Note: Public posts use 'createdAt' field, not 'timestamp'
-                const publicPostsQuery = query(collection(db, 'publicPosts'), orderBy('createdAt', 'desc'), limit(100));
-                const publicSnapshot = await getDocs(publicPostsQuery);
-
-                allPostsData.public = [];
-                publicSnapshot.forEach(doc => {
-                    allPostsData.public.push({ id: doc.id, type: 'public', ...doc.data() });
-                });
-                console.log('[DEBUG] Public posts loaded:', allPostsData.public.length);
-
-                // Combine all posts
-                const allPosts = [...allPostsData.public, ...allPostsData.private];
-
-                // Sort by createdAt (newest first)
-                allPosts.sort((a, b) => {
-                    const timeA = a.createdAt ? a.createdAt.toMillis() : 0;
-                    const timeB = b.createdAt ? b.createdAt.toMillis() : 0;
-                    return timeB - timeA;
+                const posts = [];
+                snapshot.forEach(doc => {
+                    posts.push({ id: doc.id, ...doc.data() });
                 });
 
                 // Calculate stats
                 const now = new Date();
                 const weekAgo = new Date(now.getTime() - 7*24*60*60*1000);
+                const monthAgo = new Date(now.getTime() - 30*24*60*60*1000);
 
-                const postsWeek = allPosts.filter(p => {
-                    if (!p.createdAt) return false;
-                    return p.createdAt.toDate() > weekAgo;
-                }).length;
+                const postsWeek = posts.filter(p => p.timestamp && p.timestamp.toDate() > weekAgo).length;
+                const postsMonth = posts.filter(p => p.timestamp && p.timestamp.toDate() > monthAgo).length;
 
-                // Update stats
-                document.getElementById('postsTotal').textContent = allPosts.length;
-                document.getElementById('postsPublic').textContent = allPostsData.public.length;
-                document.getElementById('postsPrivate').textContent = allPostsData.private.length;
+                const usersSnapshot = await getDocs(collection(db, 'users'));
+                const usersCount = usersSnapshot.size;
+                const avgPosts = usersCount > 0 ? (posts.length / usersCount).toFixed(1) : 0;
+
+                document.getElementById('postsTotal').textContent = posts.length;
                 document.getElementById('postsWeek').textContent = postsWeek;
+                document.getElementById('postsMonth').textContent = postsMonth;
+                document.getElementById('postsAvg').textContent = avgPosts;
 
-                // Render table with all posts initially
-                renderPostsTable(allPosts);
-
-                // Add filter listener
-                const filterSelect = document.getElementById('postTypeFilter');
-                if (filterSelect) {
-                    filterSelect.onchange = () => {
-                        const filterValue = filterSelect.value;
-                        let filteredPosts = allPosts;
-
-                        if (filterValue === 'public') {
-                            filteredPosts = allPostsData.public;
-                        } else if (filterValue === 'private') {
-                            filteredPosts = allPostsData.private;
-                        }
-
-                        renderPostsTable(filteredPosts);
-                    };
+                // Update table
+                const tbody = document.getElementById('allPostsTable');
+                if (posts.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem;">No posts found</td></tr>';
+                    return;
                 }
+
+                tbody.innerHTML = posts.slice(0, 20).map(post => {
+                    const author = post.author?.displayName || post.author?.nickname || 'Anonymous';
+                    const content = post.content ? (post.content.substring(0, 100) + (post.content.length > 100 ? '...' : '')) : '';
+                    const comments = post.commentCount || 0;
+                    const likes = post.likeCount || 0;
+                    const location = post.location || 'Unknown';
+                    const posted = post.timestamp ? new Date(post.timestamp.toDate()).toLocaleDateString() : 'Unknown';
+
+                    return `
+                        <tr>
+                            <td><strong>${author}</strong></td>
+                            <td>${content}</td>
+                            <td>${comments}</td>
+                            <td>${likes}</td>
+                            <td>${location}</td>
+                            <td>${posted}</td>
+                        </tr>
+                    `;
+                }).join('');
             } catch (error) {
                 console.error('Error loading posts page:', error);
-
-                let errorMessage = 'Error loading posts.';
-                if (error.code === 'permission-denied') {
-                    errorMessage = '🔒 Permission denied. Please ensure you are signed in with an admin account.';
-                } else if (error.message && error.message.includes('ERR_BLOCKED_BY_CLIENT')) {
-                    errorMessage = '🚫 Request blocked by browser. Please disable ad blockers and try again.';
-                } else {
-                    errorMessage = `Error: ${error.message || 'Unknown error'}. Please refresh or check console.`;
-                }
-
-                document.getElementById('allPostsTable').innerHTML =
-                    `<tr><td colspan="7" style="text-align: center; padding: 2rem; color: #ef4444;">${errorMessage}</td></tr>`;
-
-                // Reset stats to show error state
-                document.getElementById('postsTotal').textContent = '—';
-                document.getElementById('postsPublic').textContent = '—';
-                document.getElementById('postsPrivate').textContent = '—';
-                document.getElementById('postsWeek').textContent = '—';
             }
-        }
-
-        function renderPostsTable(posts) {
-            const tbody = document.getElementById('allPostsTable');
-
-            if (posts.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">No posts found</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = posts.slice(0, 50).map(post => {
-                const author = post.author?.displayName || post.author?.nickname || post.userName || post.authorDisplayName || 'Anonymous';
-                const content = post.content || post.message || post.title || '';
-                const contentPreview = content.substring(0, 100) + (content.length > 100 ? '...' : '');
-                const comments = post.commentCount || post.commentsCount || 0;
-                const likes = post.likeCount || post.likesCount || post.upvotes || 0;
-                const location = post.city || post.location || 'Unknown';
-                const posted = post.createdAt ? new Date(post.createdAt.toDate()).toLocaleDateString() : 'Unknown';
-
-                // Post type badge
-                const typeBadge = post.type === 'public'
-                    ? '<span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">🌍 PUBLIC</span>'
-                    : '<span style="background: #8b5cf6; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">🔒 PRIVATE</span>';
-
-                return `
-                    <tr>
-                        <td>${typeBadge}</td>
-                        <td><strong>${author}</strong></td>
-                        <td style="max-width: 300px;">${contentPreview}</td>
-                        <td>${comments}</td>
-                        <td>${likes}</td>
-                        <td>${location}</td>
-                        <td>${posted}</td>
-                    </tr>
-                `;
-            }).join('');
         }
 
         async function loadGeographyPage() {
@@ -1896,22 +1864,28 @@
                     users.push({ id: doc.id, ...doc.data() });
                 });
 
-                const premiumCount = users.filter(u => u.subscriptionPlan === 'premium').length;
-                const goldCount = users.filter(u => u.subscriptionPlan === 'gold').length;
+                const goCount = users.filter(u => normalizePlan(u.subscriptionPlan || 'basic') === 'premium').length;
+                const premiumCount = users.filter(u => normalizePlan(u.subscriptionPlan || 'basic') === 'gold').length;
+                const goldCount = users.filter(u => normalizePlan(u.subscriptionPlan || 'basic') === 'ultimate').length;
 
-                const premiumRevenue = premiumCount * 49.99;
-                const goldRevenue = goldCount * 149.99;
-                const totalRevenue = premiumRevenue + goldRevenue;
+                const goRevenue = goCount * PLAN_METADATA.premium.monthlyPrice;
+                const premiumRevenue = premiumCount * PLAN_METADATA.gold.monthlyPrice;
+                const goldRevenue = goldCount * PLAN_METADATA.ultimate.monthlyPrice;
+                const totalRevenue = goRevenue + premiumRevenue + goldRevenue;
                 const annualProjection = totalRevenue * 12;
 
-                document.getElementById('revenueTotal').textContent = 'R' + Math.round(totalRevenue);
-                document.getElementById('revenuePremium').textContent = 'R' + Math.round(premiumRevenue);
-                document.getElementById('revenueGold').textContent = 'R' + Math.round(goldRevenue);
-                document.getElementById('revenueProjection').textContent = 'R' + Math.round(annualProjection).toLocaleString();
+                document.getElementById('revenueTotal').textContent = formatCurrency(totalRevenue);
+                document.getElementById('revenueGo').textContent = formatCurrency(goRevenue);
+                document.getElementById('revenuePremium').textContent = formatCurrency(premiumRevenue);
+                document.getElementById('revenueGold').textContent = formatCurrency(goldRevenue);
+                document.getElementById('revenueProjection').textContent = formatCurrency(annualProjection);
 
                 // Update subscriptions table
                 const tbody = document.getElementById('subscriptionsTable');
-                const subscribedUsers = users.filter(u => u.subscriptionPlan && u.subscriptionPlan !== 'basic');
+                const subscribedUsers = users.filter(u => {
+                    const planId = normalizePlan(u.subscriptionPlan || 'basic');
+                    return planId !== 'basic';
+                });
 
                 if (subscribedUsers.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem;">No subscriptions yet</td></tr>';
@@ -1919,15 +1893,16 @@
                 }
 
                 tbody.innerHTML = subscribedUsers.map(user => {
-                    const plan = user.subscriptionPlan;
-                    const amount = plan === 'gold' ? 'R149.99' : 'R49.99';
+                    const planId = normalizePlan(user.subscriptionPlan || 'basic');
+                    const planInfo = getPlanMeta(planId);
+                    const amount = planInfo.priceLabel;
                     const started = user.subscriptionStartDate ? new Date(user.subscriptionStartDate).toLocaleDateString() : 'Unknown';
                     const status = '✅ Active';
 
                     return `
                         <tr>
                             <td><strong>${user.displayName || user.email}</strong></td>
-                            <td><span class="badge ${plan}">${plan.toUpperCase()}</span></td>
+                            <td><span class="badge ${planInfo.badgeClass}">${planInfo.label}</span></td>
                             <td>${amount}</td>
                             <td>${started}</td>
                             <td>${status}</td>
@@ -1999,7 +1974,10 @@
                 document.getElementById('analyticsDAU').textContent = Math.round(analytics.activeUsers * 0.3);
                 document.getElementById('analyticsRetention').textContent = '65%';
 
-                const conversionRate = analytics.totalUsers > 0 ? ((analytics.premiumUsers + analytics.goldUsers) / analytics.totalUsers * 100).toFixed(1) : 0;
+                const planCounts = getPlanCounts(analytics);
+                const conversionRate = analytics.totalUsers > 0
+                    ? (((planCounts.goUsers + planCounts.premiumUsers + planCounts.goldUsers) / analytics.totalUsers) * 100).toFixed(1)
+                    : 0;
                 document.getElementById('analyticsConversion').textContent = conversionRate + '%';
 
                 // Charts would go here - reuse the overview charts
@@ -2093,10 +2071,6 @@
                 const analytics = analyticsResult.data;
                 latestAnalytics = analytics;
 
-                // Debug: Log analytics data
-                console.log('[DEBUG] Analytics data received:', analytics);
-                console.log('[DEBUG] Total Posts:', analytics.totalPosts);
-
                 // Get geographic stats
                 const geoResult = await getGeographicStats({
                     country: currentFilters.country !== 'all' ? currentFilters.country : null,
@@ -2133,14 +2107,16 @@
         }
 
         function updateStatsCards(analytics, geoStats) {
-            document.getElementById('totalUsers').textContent = analytics.totalUsers.toLocaleString();
-            document.getElementById('activeUsers').textContent = analytics.activeUsers.toLocaleString();
-            document.getElementById('totalPosts').textContent = analytics.totalPosts.toLocaleString();
-            document.getElementById('revenue').textContent = 'R' + Math.round(analytics.monthlyRevenue).toLocaleString();
-            document.getElementById('premiumUsers').textContent = analytics.premiumUsers.toLocaleString();
-            document.getElementById('goldUsers').textContent = analytics.goldUsers.toLocaleString();
-            document.getElementById('pendingReports').textContent = analytics.pendingReports.toLocaleString();
-            document.getElementById('engagement').textContent = analytics.engagement + '%';
+            const totals = getPlanCounts(analytics);
+            document.getElementById('totalUsers').textContent = (analytics.totalUsers ?? 0).toLocaleString();
+            document.getElementById('activeUsers').textContent = (analytics.activeUsers ?? 0).toLocaleString();
+            document.getElementById('totalPosts').textContent = (analytics.totalPosts ?? 0).toLocaleString();
+            document.getElementById('revenue').textContent = formatCurrency(analytics.monthlyRevenue ?? 0);
+            document.getElementById('goUsers').textContent = totals.goUsers.toLocaleString();
+            document.getElementById('premiumUsers').textContent = totals.premiumUsers.toLocaleString();
+            document.getElementById('goldUsers').textContent = totals.goldUsers.toLocaleString();
+            document.getElementById('pendingReports').textContent = (analytics.pendingReports ?? 0).toLocaleString();
+            document.getElementById('engagement').textContent = (analytics.engagement ?? 0) + '%';
         }
 
         function updateTopCitiesTable(cities) {
@@ -2184,8 +2160,8 @@
                 });
 
                 tbody.innerHTML = users.map(user => {
-                    const plan = user.subscriptionPlan || 'basic';
-                    const badgeClass = plan === 'gold' ? 'gold' : plan === 'premium' ? 'premium' : 'basic';
+                    const planId = normalizePlan(user.subscriptionPlan || 'basic');
+                    const planInfo = getPlanMeta(planId);
                     const location = user.city ? `${user.city}, ${user.province || user.country}` : (user.province || user.country || 'Not set');
                     const lastActive = user.lastActive ? new Date(user.lastActive.toDate()).toLocaleDateString() : 'Never';
                     const joined = user.createdAt ? new Date(user.createdAt.toDate()).toLocaleDateString() : 'Unknown';
@@ -2195,7 +2171,7 @@
                             <td><strong>${user.displayName || 'Anonymous'}</strong></td>
                             <td>${user.email || 'N/A'}</td>
                             <td>${location}</td>
-                            <td><span class="badge ${badgeClass}">${plan.toUpperCase()}</span></td>
+                            <td><span class="badge ${planInfo.badgeClass}">${planInfo.label}</span></td>
                             <td>${joined}</td>
                             <td>${lastActive}</td>
                         </tr>
@@ -2263,6 +2239,7 @@
                 analytics = {
                     userGrowth: [0, 0, 0, 0, 0],
                     totalUsers: 0,
+                    goUsers: 0,
                     premiumUsers: 0,
                     goldUsers: 0,
                     hourlyActivity: Array(6).fill(0),
@@ -2270,7 +2247,7 @@
                 };
             }
 
-            const basicUsers = analytics.totalUsers - analytics.premiumUsers - analytics.goldUsers;
+            const { basicUsers, goUsers, premiumUsers, goldUsers } = getPlanCounts(analytics);
 
             // Generate labels for 30-day user growth chart
             const userGrowthLabels = [];
@@ -2311,10 +2288,10 @@
             chartInstances.subscription = new Chart(subCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Basic', 'Premium', 'Gold'],
+                    labels: ['Basic', 'Go', 'Premium', 'Gold'],
                     datasets: [{
-                        data: [basicUsers, analytics.premiumUsers, analytics.goldUsers],
-                        backgroundColor: ['#e5e7eb', '#a78bfa', '#fbbf24']
+                        data: [basicUsers, goUsers, premiumUsers, goldUsers],
+                        backgroundColor: ['#e5e7eb', '#bbf7d0', '#c4b5fd', '#fcd34d']
                     }]
                 },
                 options: {
@@ -2418,11 +2395,11 @@
         }
 
         function buildSubscriptionModal(analytics, state) {
-            const basicUsers = Math.max(analytics.totalUsers - analytics.premiumUsers - analytics.goldUsers, 0);
+            const { basicUsers, goUsers, premiumUsers, goldUsers } = getPlanCounts(analytics || {});
 
-            const labels = ['Basic', 'Premium', 'Gold'];
-            const dataPoints = [basicUsers, analytics.premiumUsers, analytics.goldUsers];
-            const colors = ['#e5e7eb', '#a78bfa', '#fbbf24'];
+            const labels = ['Basic', 'Go', 'Premium', 'Gold'];
+            const dataPoints = [basicUsers, goUsers, premiumUsers, goldUsers];
+            const colors = ['#e5e7eb', '#bbf7d0', '#c4b5fd', '#fcd34d'];
 
             // Support doughnut, bar, and line chart types
             const chartType = state.style || 'doughnut';
