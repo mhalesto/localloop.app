@@ -1774,11 +1774,18 @@
         async function loadPostsPage() {
             console.log('🔵 loadPostsPage() called');
             try {
-                console.log('🔍 Creating posts query...');
-                const postsQuery = query(collection(db, 'posts'), orderBy('createdAt', 'desc'), limit(50));
-                console.log('📡 Fetching posts from Firestore...');
-                const snapshot = await getDocs(postsQuery);
-                console.log('✅ Posts snapshot received, size:', snapshot.size);
+                console.log('🔍 Trying to fetch posts without ordering first...');
+                let snapshot = await getDocs(collection(db, 'posts'));
+                console.log('📡 Unordered posts snapshot size:', snapshot.size);
+
+                if (snapshot.size > 0) {
+                    console.log('✅ Posts exist! Now trying ordered query...');
+                    const postsQuery = query(collection(db, 'posts'), orderBy('createdAt', 'desc'), limit(50));
+                    snapshot = await getDocs(postsQuery);
+                    console.log('✅ Ordered posts snapshot received, size:', snapshot.size);
+                } else {
+                    console.warn('⚠️ No posts found in collection at all!');
+                }
 
                 const posts = [];
                 snapshot.forEach(doc => {
