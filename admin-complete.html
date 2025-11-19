@@ -465,6 +465,8 @@
         .badge.premium { background: #d1fae5; color: #065f46; }
         .badge.gold { background: #ede9fe; color: #5b21b6; }
         .badge.ultimate { background: #fef3c7; color: #92400e; }
+        .badge.badge-success { background: #d1fae5; color: #065f46; }
+        .badge.badge-warning { background: #fef3c7; color: #92400e; }
 
         /* Page Content */
         .page-content {
@@ -884,6 +886,7 @@
                         <thead>
                             <tr>
                                 <th>Author</th>
+                                <th>Type</th>
                                 <th>Content</th>
                                 <th>Comments</th>
                                 <th>Likes</th>
@@ -893,7 +896,7 @@
                         </thead>
                         <tbody id="allPostsTable">
                             <tr>
-                                <td colspan="6" style="text-align: center; padding: 2rem;">Loading posts...</td>
+                                <td colspan="7" style="text-align: center; padding: 2rem;">Loading posts...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -1842,7 +1845,7 @@
                 const tbody = document.getElementById('allPostsTable');
                 if (posts.length === 0) {
                     console.warn('⚠️ No posts found, showing empty message');
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem;">No posts found</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">No posts found</td></tr>';
                     return;
                 }
 
@@ -1856,9 +1859,16 @@
                     const postDate = getPostDate(post);
                     const posted = postDate ? postDate.toLocaleDateString() : 'Unknown';
 
+                    // Determine if post is anonymous or public
+                    const isAnonymous = post.isAnonymous || author === 'Anonymous';
+                    const postType = isAnonymous
+                        ? '<span class="badge badge-warning">Anonymous</span>'
+                        : '<span class="badge badge-success">Public</span>';
+
                     return `
                         <tr>
                             <td><strong>${author}</strong></td>
+                            <td>${postType}</td>
                             <td>${content}</td>
                             <td>${comments}</td>
                             <td>${likes}</td>
