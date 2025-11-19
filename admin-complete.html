@@ -1398,6 +1398,7 @@
         let isLoading = false;
         let isInitialized = false;
         let latestAnalytics = null;
+        let pendingReload = false;
 
         const modalState = {
             chartKey: null,
@@ -2110,11 +2111,13 @@
         async function loadDashboardData() {
             // Prevent multiple simultaneous loads
             if (isLoading) {
-                console.log('Already loading dashboard data, skipping...');
+                console.log('Already loading dashboard data, marking for reload after current load completes...');
+                pendingReload = true;
                 return;
             }
 
             isLoading = true;
+            pendingReload = false;
             console.log('Loading dashboard data...');
 
             try {
@@ -2159,6 +2162,13 @@
             } finally {
                 isLoading = false;
                 console.log('Dashboard data load complete');
+
+                // If a reload was requested during loading, trigger it now
+                if (pendingReload) {
+                    console.log('Pending reload detected, triggering now...');
+                    pendingReload = false;
+                    setTimeout(() => loadDashboardData(), 100); // Small delay to prevent rapid firing
+                }
             }
         }
 
