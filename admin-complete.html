@@ -1773,7 +1773,7 @@
 
         async function loadPostsPage() {
             try {
-                const postsQuery = query(collection(db, 'posts'), orderBy('timestamp', 'desc'), limit(50));
+                const postsQuery = query(collection(db, 'posts'), orderBy('createdAt', 'desc'), limit(50));
                 const snapshot = await getDocs(postsQuery);
 
                 const posts = [];
@@ -1786,8 +1786,8 @@
                 const weekAgo = new Date(now.getTime() - 7*24*60*60*1000);
                 const monthAgo = new Date(now.getTime() - 30*24*60*60*1000);
 
-                const postsWeek = posts.filter(p => p.timestamp && p.timestamp.toDate() > weekAgo).length;
-                const postsMonth = posts.filter(p => p.timestamp && p.timestamp.toDate() > monthAgo).length;
+                const postsWeek = posts.filter(p => p.createdAt && p.createdAt.toDate() > weekAgo).length;
+                const postsMonth = posts.filter(p => p.createdAt && p.createdAt.toDate() > monthAgo).length;
 
                 const usersSnapshot = await getDocs(collection(db, 'users'));
                 const usersCount = usersSnapshot.size;
@@ -1811,7 +1811,7 @@
                     const comments = post.commentCount || 0;
                     const likes = post.likeCount || 0;
                     const location = post.location || 'Unknown';
-                    const posted = post.timestamp ? new Date(post.timestamp.toDate()).toLocaleDateString() : 'Unknown';
+                    const posted = post.createdAt ? new Date(post.createdAt.toDate()).toLocaleDateString() : 'Unknown';
 
                     return `
                         <tr>
