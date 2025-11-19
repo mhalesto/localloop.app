@@ -1809,8 +1809,24 @@
                 const weekAgo = new Date(now.getTime() - 7*24*60*60*1000);
                 const monthAgo = new Date(now.getTime() - 30*24*60*60*1000);
 
-                const postsWeek = posts.filter(p => p.createdAt && p.createdAt.toDate() > weekAgo).length;
-                const postsMonth = posts.filter(p => p.createdAt && p.createdAt.toDate() > monthAgo).length;
+                // Handle both numeric timestamps and Firestore Timestamp objects
+                const getPostDate = (post) => {
+                    if (!post.createdAt) return null;
+                    // If it's a Firestore Timestamp object, use toDate()
+                    if (typeof post.createdAt.toDate === 'function') return post.createdAt.toDate();
+                    // If it's a number (Unix timestamp), convert to Date
+                    if (typeof post.createdAt === 'number') return new Date(post.createdAt);
+                    return null;
+                };
+
+                const postsWeek = posts.filter(p => {
+                    const date = getPostDate(p);
+                    return date && date > weekAgo;
+                }).length;
+                const postsMonth = posts.filter(p => {
+                    const date = getPostDate(p);
+                    return date && date > monthAgo;
+                }).length;
                 console.log('📈 Stats - Total:', posts.length, 'Week:', postsWeek, 'Month:', postsMonth);
 
                 const usersSnapshot = await getDocs(collection(db, 'users'));
@@ -1837,7 +1853,8 @@
                     const comments = post.commentCount || 0;
                     const likes = post.likeCount || 0;
                     const location = post.location || 'Unknown';
-                    const posted = post.createdAt ? new Date(post.createdAt.toDate()).toLocaleDateString() : 'Unknown';
+                    const postDate = getPostDate(post);
+                    const posted = postDate ? postDate.toLocaleDateString() : 'Unknown';
 
                     return `
                         <tr>
