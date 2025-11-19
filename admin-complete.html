@@ -1772,14 +1772,30 @@
         }
 
         async function loadPostsPage() {
+            console.log('🔵 loadPostsPage() called');
             try {
+                console.log('🔍 Creating posts query...');
                 const postsQuery = query(collection(db, 'posts'), orderBy('createdAt', 'desc'), limit(50));
+                console.log('📡 Fetching posts from Firestore...');
                 const snapshot = await getDocs(postsQuery);
+                console.log('✅ Posts snapshot received, size:', snapshot.size);
 
                 const posts = [];
                 snapshot.forEach(doc => {
-                    posts.push({ id: doc.id, ...doc.data() });
+                    const postData = { id: doc.id, ...doc.data() };
+                    posts.push(postData);
                 });
+
+                console.log('📊 Total posts loaded:', posts.length);
+                if (posts.length > 0) {
+                    console.log('📝 First post sample:', {
+                        id: posts[0].id,
+                        author: posts[0].author,
+                        content: posts[0].content?.substring(0, 50),
+                        createdAt: posts[0].createdAt,
+                        timestamp: posts[0].timestamp
+                    });
+                }
 
                 // Calculate stats
                 const now = new Date();
@@ -1788,6 +1804,7 @@
 
                 const postsWeek = posts.filter(p => p.createdAt && p.createdAt.toDate() > weekAgo).length;
                 const postsMonth = posts.filter(p => p.createdAt && p.createdAt.toDate() > monthAgo).length;
+                console.log('📈 Stats - Total:', posts.length, 'Week:', postsWeek, 'Month:', postsMonth);
 
                 const usersSnapshot = await getDocs(collection(db, 'users'));
                 const usersCount = usersSnapshot.size;
@@ -1801,10 +1818,12 @@
                 // Update table
                 const tbody = document.getElementById('allPostsTable');
                 if (posts.length === 0) {
+                    console.warn('⚠️ No posts found, showing empty message');
                     tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem;">No posts found</td></tr>';
                     return;
                 }
 
+                console.log('📋 Rendering posts table...');
                 tbody.innerHTML = posts.slice(0, 20).map(post => {
                     const author = post.author?.displayName || post.author?.nickname || 'Anonymous';
                     const content = post.content ? (post.content.substring(0, 100) + (post.content.length > 100 ? '...' : '')) : '';
@@ -1824,8 +1843,11 @@
                         </tr>
                     `;
                 }).join('');
+                console.log('✅ Posts page loaded successfully');
             } catch (error) {
-                console.error('Error loading posts page:', error);
+                console.error('❌ Error loading posts page:', error);
+                console.error('Error details:', error.message);
+                console.error('Error stack:', error.stack);
             }
         }
 
